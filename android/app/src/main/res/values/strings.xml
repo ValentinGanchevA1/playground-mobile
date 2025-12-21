@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">mobile</string>
+    <string name="MAPS_API_KEY">AIzaSyAkbdYC4rFsqI5c828eMLIqUdnBnUxJ_Zw</string>
 </resources>

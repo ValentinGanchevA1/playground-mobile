@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npx tsc:*)",
+      "Bash(adb devices:*)",
+      "Bash(adb reverse:*)",
+      "Bash(adb shell:*)",
+      "Bash(yarn install)",
+      "Bash(./gradlew clean:*)",
+      "Bash(npx react-native run-android)",
+      "Bash(./gradlew app:installDebug:*)",
+      "Bash(cat:*)",
+      "Bash(taskkill:*)"
+    ]
+  }
+}
