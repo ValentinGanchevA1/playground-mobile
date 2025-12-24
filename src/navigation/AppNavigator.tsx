@@ -22,6 +22,12 @@ import { ProfileCreationScreen } from '../features/profile/ProfileCreationScreen
 import { ProfileEditScreen } from '../features/profile/ProfileEditScreen';
 import { VerificationScreen } from '../features/verification/VerificationScreen';
 import { SocialLinkingScreen } from '../features/verification/SocialLinkingScreen';
+import {
+  SettingsScreen,
+  PrivacyScreen,
+  HelpScreen,
+  AboutScreen,
+} from '../features/settings';
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -122,6 +128,26 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="SocialLinking"
               component={SocialLinkingScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Settings"
+              component={SettingsScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Privacy"
+              component={PrivacyScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Help"
+              component={HelpScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="About"
+              component={AboutScreen}
               options={{ presentation: 'card' }}
             />
           </>

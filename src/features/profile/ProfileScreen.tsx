@@ -131,15 +131,15 @@ export const ProfileScreen: React.FC = () => {
         )}
 
         {/* Subscription Badge */}
-        {user?.subscriptionTier && user.subscriptionTier !== SubscriptionTier.FREE && (
+        {user?.subscriptionTier != null && user.subscriptionTier !== SubscriptionTier.FREE ? (
           <View style={[styles.tierBadge, { backgroundColor: getTierColor(user.subscriptionTier) }]}>
             <Icon name="crown" size={14} color="#fff" />
             <Text style={styles.tierBadgeText}>{getTierLabel(user.subscriptionTier)}</Text>
           </View>
-        )}
+        ) : null}
 
         {/* Photo Indicators */}
-        {photos.length > 1 && (
+        {photos.length > 1 ? (
           <View style={styles.photoIndicators}>
             {photos.map((_, index) => (
               <TouchableOpacity
@@ -149,7 +149,7 @@ export const ProfileScreen: React.FC = () => {
               />
             ))}
           </View>
-        )}
+        ) : null}
       </View>
 
       {/* User Info */}
@@ -158,9 +158,9 @@ export const ProfileScreen: React.FC = () => {
           <Text style={styles.displayName}>
             {user?.displayName}{user?.profile?.age ? `, ${user.profile.age}` : ''}
           </Text>
-          {user?.verificationScore && user.verificationScore > 50 && (
+          {user?.verificationScore != null && user.verificationScore > 50 ? (
             <Icon name="check-decagram" size={24} color="#00d4ff" />
-          )}
+          ) : null}
         </View>
 
         {/* Verification Score */}
@@ -190,9 +190,9 @@ export const ProfileScreen: React.FC = () => {
         </View>
 
         {/* Bio */}
-        {user?.profile?.bio && (
+        {user?.profile?.bio ? (
           <Text style={styles.bio}>{user.profile.bio}</Text>
-        )}
+        ) : null}
       </View>
 
       {/* Quick Actions */}
@@ -208,7 +208,7 @@ export const ProfileScreen: React.FC = () => {
       </View>
 
       {/* Photo Grid */}
-      {photos.length > 0 && (
+      {photos.length > 0 ? (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Photos</Text>
           <View style={styles.photoGrid}>
@@ -221,17 +221,17 @@ export const ProfileScreen: React.FC = () => {
                 <Image source={{ uri: photo }} style={styles.gridPhotoImage} />
               </TouchableOpacity>
             ))}
-            {photos.length < 6 && (
+            {photos.length < 6 ? (
               <TouchableOpacity style={styles.addPhotoButton} onPress={handleEditProfile}>
                 <Icon name="plus" size={24} color="#666" />
               </TouchableOpacity>
-            )}
+            ) : null}
           </View>
         </View>
-      )}
+      ) : null}
 
       {/* Interests */}
-      {user?.profile?.interests && user.profile.interests.length > 0 && (
+      {user?.profile?.interests && user.profile.interests.length > 0 ? (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Interests</Text>
           <View style={styles.tagsContainer}>
@@ -242,10 +242,10 @@ export const ProfileScreen: React.FC = () => {
             ))}
           </View>
         </View>
-      )}
+      ) : null}
 
       {/* Goals */}
-      {user?.profile?.goals && user.profile.goals.length > 0 && (
+      {user?.profile?.goals && user.profile.goals.length > 0 ? (
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Looking For</Text>
           <View style={styles.goalsContainer}>
@@ -261,7 +261,7 @@ export const ProfileScreen: React.FC = () => {
             })}
           </View>
         </View>
-      )}
+      ) : null}
 
       {/* Social Links */}
       <View style={styles.section}>
@@ -306,7 +306,7 @@ export const ProfileScreen: React.FC = () => {
       </View>
 
       {/* Subscription */}
-      {user?.subscriptionTier === SubscriptionTier.FREE && (
+      {user?.subscriptionTier === SubscriptionTier.FREE || !user?.subscriptionTier ? (
         <TouchableOpacity style={styles.upgradeCard} onPress={handleUpgrade}>
           <View style={styles.upgradeContent}>
             <Icon name="crown" size={32} color="#FFD700" />
@@ -319,7 +319,7 @@ export const ProfileScreen: React.FC = () => {
           </View>
           <Icon name="chevron-right" size={24} color="#666" />
         </TouchableOpacity>
-      )}
+      ) : null}
 
       {/* Menu Items */}
       <View style={styles.menuSection}>

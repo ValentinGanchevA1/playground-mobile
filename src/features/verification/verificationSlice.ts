@@ -17,6 +17,19 @@ interface VerificationState {
   error: string | null;
 }
 
+// Fetch verification status
+export const fetchVerificationStatus = createAsyncThunk(
+  'verification/fetchStatus',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.get('/verification/status');
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to fetch status');
+    }
+  }
+);
+
 // Email verification
 export const sendEmailCode = createAsyncThunk(
   'verification/sendEmailCode',
@@ -119,6 +132,21 @@ const verificationSlice = createSlice({
   },
   extraReducers: (builder) => {
     builder
+      // Fetch status
+      .addCase(fetchVerificationStatus.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(fetchVerificationStatus.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.badges = action.payload.badges || {};
+        state.score = action.payload.score || 0;
+        state.pending = action.payload.pending || [];
+      })
+      .addCase(fetchVerificationStatus.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
       // Email
       .addCase(sendEmailCode.pending, (state) => {
         state.isLoading = true;
