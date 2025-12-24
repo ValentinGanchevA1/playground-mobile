@@ -13,7 +13,6 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { BlurView } from '@react-native-community/blur';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { fetchLikesReceived, likeProfile, LikeReceived } from './discoverySlice';
 import { SubscriptionTier } from '../profile/types';

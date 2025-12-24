@@ -1,7 +1,7 @@
 // src/features/profile/profileSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../../api/client';
-import { ProfileFormData, ProfileStep, PhotoSlot } from './types';
+import { ProfileFormData, ProfileStep, PhotoSlot, RelationshipGoal } from './types';
 
 interface ProfileState {
   formData: ProfileFormData;
@@ -169,13 +169,13 @@ const profileSlice = createSlice({
     clearError: (state) => {
       state.error = null;
     },
-    resetForm: () => ({
-      formData: initialFormData,
-      currentStep: 'basics',
-      completionStatus: null,
-      isSubmitting: false,
-      error: null,
-    }),
+    resetForm: (state) => {
+      state.formData = initialFormData;
+      state.currentStep = 'basics' as ProfileStep;
+      state.completionStatus = null;
+      state.isSubmitting = false;
+      state.error = null;
+    },
   },
   extraReducers: (builder) => {
     builder

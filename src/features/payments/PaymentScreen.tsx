@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
   },
   card: {
     backgroundColor: '#1a1a24',
-    textColor: '#ffffff',
   },
   button: {
     backgroundColor: '#00d4ff',

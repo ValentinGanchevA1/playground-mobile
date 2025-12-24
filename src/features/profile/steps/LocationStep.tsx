@@ -35,8 +35,8 @@ export const LocationStep: React.FC<Props> = ({ onNext, onBack, isSubmitting }) 
           (position) => {
             dispatch(updateFormData({
               location: {
-                lat: position.coords.latitude,
-                lng: position.coords.longitude,
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
               },
             }));
             setLocationStatus('granted');
@@ -98,7 +98,7 @@ export const LocationStep: React.FC<Props> = ({ onNext, onBack, isSubmitting }) 
           <Text style={styles.successIcon}>✓</Text>
           <Text style={styles.successText}>Location enabled!</Text>
           <Text style={styles.coordsText}>
-            {formData.location?.lat.toFixed(4)}, {formData.location?.lng.toFixed(4)}
+            {formData.location?.latitude.toFixed(4)}, {formData.location?.longitude.toFixed(4)}
           </Text>
         </View>
       )}

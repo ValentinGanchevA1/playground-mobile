@@ -6,6 +6,7 @@ import chatReducer from '../features/chat/chatSlice';
 import discoveryReducer from '../features/discovery/discoverySlice';
 import profileReducer from '../features/profile/profileSlice';
 import profileEditReducer from '../features/profile/profileEditSlice';
+import verificationReducer from '../features/verification/verificationSlice';
 
 export const store = configureStore({
   reducer: {
@@ -15,6 +16,7 @@ export const store = configureStore({
     discovery: discoveryReducer,
     profile: profileReducer,
     profileEdit: profileEditReducer,
+    verification: verificationReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

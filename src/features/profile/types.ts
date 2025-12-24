@@ -91,6 +91,13 @@ export interface User {
   socialLinks?: SocialLink[];
 }
 
+export interface LocationData {
+  latitude: number;
+  longitude: number;
+  city?: string;
+  country?: string;
+}
+
 export interface ProfileFormData {
   displayName: string;
   bio: string;
@@ -100,6 +107,7 @@ export interface ProfileFormData {
   interests: string[];
   goals: RelationshipGoal[];
   photos: PhotoSlot[];
+  location?: LocationData;
 }
 
 export interface PhotoSlot {

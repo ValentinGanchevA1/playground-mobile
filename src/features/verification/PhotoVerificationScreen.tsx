@@ -8,13 +8,13 @@ import {
   Image,
   ActivityIndicator,
 } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+import { launchCamera } from 'react-native-image-picker';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { initiatePhotoVerification, submitPhotoVerification } from './verificationSlice';
 
 type Step = 'intro' | 'challenge' | 'capture' | 'review' | 'result';
 
-const CHALLENGE_INSTRUCTIONS = {
+const CHALLENGE_INSTRUCTIONS: Record<string, string> = {
   smile: 'Give us a big smile! 😊',
   turn_left: 'Turn your head slightly left',
   turn_right: 'Turn your head slightly right',
@@ -24,11 +24,11 @@ const CHALLENGE_INSTRUCTIONS = {
 
 export const PhotoVerificationScreen: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { challenge, isSubmitting, verificationResult } = useAppSelector(
+  const { challenge, isLoading, verificationResult } = useAppSelector(
     (state) => state.verification
   );
 
-  const cameraRef = useRef<RNCamera>(null);
+  const cameraRef = useRef<any>(null);
   const [step, setStep] = useState<Step>('intro');
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
 
@@ -38,18 +38,17 @@ export const PhotoVerificationScreen: React.FC = () => {
   };
 
   const handleCapture = async () => {
-    if (!cameraRef.current) return;
-
-    const options = {
+    const result = await launchCamera({
+      mediaType: 'photo',
       quality: 0.8,
-      base64: false,
-      width: 800,
-      mirrorImage: true,
-    };
+      cameraType: 'front',
+      saveToPhotos: false,
+    });
 
-    const data = await cameraRef.current.takePictureAsync(options);
-    setCapturedPhoto(data.uri);
-    setStep('review');
+    if (result.assets && result.assets[0]?.uri) {
+      setCapturedPhoto(result.assets[0].uri);
+      setStep('review');
+    }
   };
 
   const handleRetake = () => {
@@ -93,21 +92,15 @@ export const PhotoVerificationScreen: React.FC = () => {
       case 'challenge':
         return (
           <View style={styles.cameraContainer}>
-            <RNCamera
-              ref={cameraRef}
-              style={styles.camera}
-              type={RNCamera.Constants.Type.front}
-              captureAudio={false}
-            >
-              <View style={styles.cameraOverlay}>
-                <View style={styles.faceGuide} />
-              </View>
-            </RNCamera>
+            <View style={styles.cameraPlaceholder}>
+              <View style={styles.faceGuide} />
+              <Text style={styles.cameraText}>Camera will open when you tap capture</Text>
+            </View>
 
             <View style={styles.challengeBox}>
               <Text style={styles.challengeLabel}>Your Challenge:</Text>
               <Text style={styles.challengeText}>
-                {CHALLENGE_INSTRUCTIONS[challenge] || 'Look at the camera'}
+                {challenge ? CHALLENGE_INSTRUCTIONS[challenge] : 'Look at the camera'}
               </Text>
             </View>
 
@@ -133,9 +126,9 @@ export const PhotoVerificationScreen: React.FC = () => {
               <TouchableOpacity
                 style={[styles.button, styles.submitButton]}
                 onPress={handleSubmit}
-                disabled={isSubmitting}
+                disabled={isLoading}
               >
-                {isSubmitting ? (
+                {isLoading ? (
                   <ActivityIndicator color="#000" />
                 ) : (
                   <Text style={styles.buttonText}>Submit</Text>
@@ -246,6 +239,17 @@ const styles = StyleSheet.create({
   },
   camera: {
     flex: 1,
+  },
+  cameraPlaceholder: {
+    flex: 1,
+    backgroundColor: '#1a1a24',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  cameraText: {
+    color: '#888',
+    fontSize: 14,
+    marginTop: 24,
   },
   cameraOverlay: {
     flex: 1,

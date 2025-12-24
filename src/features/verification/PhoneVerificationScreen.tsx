@@ -14,7 +14,7 @@ import { sendPhoneCode, verifyPhoneCode } from './verificationSlice';
 
 export const PhoneVerificationScreen: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { isSending, isVerifying, error, countdown } = useAppSelector(
+  const { isLoading, error, phoneCountdown } = useAppSelector(
     (state) => state.verification
   );
 
@@ -101,11 +101,11 @@ export const PhoneVerificationScreen: React.FC = () => {
           {error && <Text style={styles.error}>{error}</Text>}
 
           <TouchableOpacity
-            style={[styles.button, (!phone || isSending) && styles.buttonDisabled]}
+            style={[styles.button, (!phone || isLoading) && styles.buttonDisabled]}
             onPress={handleSendCode}
-            disabled={!phone || isSending}
+            disabled={!phone || isLoading}
           >
-            {isSending ? (
+            {isLoading ? (
               <ActivityIndicator color="#000" />
             ) : (
               <Text style={styles.buttonText}>Send Code</Text>
@@ -123,7 +123,7 @@ export const PhoneVerificationScreen: React.FC = () => {
             {code.map((digit, index) => (
               <TextInput
                 key={index}
-                ref={(ref) => (inputRefs.current[index] = ref)}
+                ref={(ref) => { inputRefs.current[index] = ref; }}
                 style={[styles.codeInput, digit && styles.codeInputFilled]}
                 value={digit}
                 onChangeText={(value) => handleCodeChange(value.slice(-1), index)}
@@ -137,16 +137,16 @@ export const PhoneVerificationScreen: React.FC = () => {
 
           {error && <Text style={styles.error}>{error}</Text>}
 
-          {isVerifying ? (
+          {isLoading ? (
             <ActivityIndicator color="#00d4ff" style={styles.verifying} />
           ) : (
             <TouchableOpacity
               style={styles.resendButton}
               onPress={handleResend}
-              disabled={countdown > 0}
+              disabled={phoneCountdown > 0}
             >
-              <Text style={[styles.resendText, countdown > 0 && styles.resendDisabled]}>
-                {countdown > 0 ? `Resend in ${countdown}s` : 'Resend Code'}
+              <Text style={[styles.resendText, phoneCountdown > 0 && styles.resendDisabled]}>
+                {phoneCountdown > 0 ? `Resend in ${phoneCountdown}s` : 'Resend Code'}
               </Text>
             </TouchableOpacity>
           )}

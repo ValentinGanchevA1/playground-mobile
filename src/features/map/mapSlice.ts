@@ -75,7 +75,7 @@ const mapSlice = createSlice({
     updateLocation: (state, action: PayloadAction<Location>) => {
       state.currentLocation = action.payload;
     },
-    setNearbyUsers: (state, action: PayloadAction<User[]>) => {
+    setNearbyUsers: (state, action: PayloadAction<NearbyUser[]>) => {
       state.nearbyUsers = action.payload;
     },
     setError: (state, action: PayloadAction<string | null>) => {

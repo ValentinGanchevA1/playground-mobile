@@ -2,6 +2,24 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { apiClient } from '../../api/client';
 
+interface SocialLink {
+  id: string;
+  provider: string;
+  username?: string;
+  displayName?: string;
+  avatarUrl?: string;
+  linkedAt: string;
+  metadata?: {
+    username?: string;
+    followers?: number;
+  };
+}
+
+interface VerificationResult {
+  status: 'approved' | 'pending' | 'rejected';
+  message: string;
+}
+
 interface VerificationState {
   badges: Record<string, boolean>;
   score: number;
@@ -12,6 +30,9 @@ interface VerificationState {
   emailCountdown: number;
   // Phone verification
   phoneCountdown: number;
+  // Photo verification
+  challenge: string | null;
+  verificationResult: VerificationResult | null;
   // Shared
   isLoading: boolean;
   error: string | null;
@@ -67,6 +88,65 @@ export const resendEmailCode = createAsyncThunk(
   }
 );
 
+// Phone verification
+export const sendPhoneCode = createAsyncThunk(
+  'verification/sendPhoneCode',
+  async (phone: string, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.post('/verification/phone/send', { phone });
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to send code');
+    }
+  }
+);
+
+export const verifyPhoneCode = createAsyncThunk(
+  'verification/verifyPhoneCode',
+  async (code: string, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.post('/verification/phone/verify', { code });
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Verification failed');
+    }
+  }
+);
+
+// Photo verification
+export const initiatePhotoVerification = createAsyncThunk(
+  'verification/initiatePhoto',
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await apiClient.post('/verification/photo/initiate');
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Failed to initiate');
+    }
+  }
+);
+
+export const submitPhotoVerification = createAsyncThunk(
+  'verification/submitPhoto',
+  async (selfieUri: string, { rejectWithValue }) => {
+    try {
+      const formData = new FormData();
+      formData.append('selfie', {
+        uri: selfieUri,
+        type: 'image/jpeg',
+        name: 'selfie.jpg',
+      } as any);
+
+      const { data } = await apiClient.post('/verification/photo/submit', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.response?.data?.message || 'Verification failed');
+    }
+  }
+);
+
 // Social links
 export const fetchSocialLinks = createAsyncThunk(
   'verification/fetchSocialLinks',
@@ -113,6 +193,8 @@ const verificationSlice = createSlice({
     emailStep: 'input',
     emailCountdown: 0,
     phoneCountdown: 0,
+    challenge: null,
+    verificationResult: null,
     isLoading: false,
     error: null,
   } as VerificationState,
@@ -174,6 +256,59 @@ const verificationSlice = createSlice({
         state.isLoading = false;
         state.error = action.payload as string;
       })
+      // Phone
+      .addCase(sendPhoneCode.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(sendPhoneCode.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.phoneCountdown = action.payload.expiresIn;
+      })
+      .addCase(sendPhoneCode.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(verifyPhoneCode.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(verifyPhoneCode.fulfilled, (state) => {
+        state.isLoading = false;
+        state.badges.phone = true;
+      })
+      .addCase(verifyPhoneCode.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      // Photo
+      .addCase(initiatePhotoVerification.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(initiatePhotoVerification.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.challenge = action.payload.challenge;
+      })
+      .addCase(initiatePhotoVerification.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
+      .addCase(submitPhotoVerification.pending, (state) => {
+        state.isLoading = true;
+        state.error = null;
+      })
+      .addCase(submitPhotoVerification.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.verificationResult = action.payload;
+        if (action.payload.status === 'approved') {
+          state.badges.photo = true;
+        }
+      })
+      .addCase(submitPhotoVerification.rejected, (state, action) => {
+        state.isLoading = false;
+        state.error = action.payload as string;
+      })
       // Social
       .addCase(fetchSocialLinks.fulfilled, (state, action) => {
         state.socialLinks = action.payload;
@@ -195,4 +330,5 @@ export const {
   clearError,
 } = verificationSlice.actions;
 
+export type { SocialLink };
 export default verificationSlice.reducer;

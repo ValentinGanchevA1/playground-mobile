@@ -67,7 +67,6 @@ export const PhotoGrid: React.FC<Props> = ({
         freeStyleCropEnabled: true,
         cropperToolbarTitle: 'Adjust Photo',
         cropperActiveWidgetColor: '#00d4ff',
-        cropperStatusBarColor: '#0a0a0f',
         cropperToolbarColor: '#1a1a24',
         cropperToolbarWidgetColor: '#fff',
         compressImageQuality: 0.8,
@@ -100,12 +99,12 @@ export const PhotoGrid: React.FC<Props> = ({
       // Download image first for re-cropping
       const image = await ImageCropPicker.openCropper({
         path: photoUrl,
+        mediaType: 'photo',
         width: 800,
         height: 1000,
         freeStyleCropEnabled: true,
         cropperToolbarTitle: 'Adjust Photo',
         cropperActiveWidgetColor: '#00d4ff',
-        cropperStatusBarColor: '#0a0a0f',
         cropperToolbarColor: '#1a1a24',
         cropperToolbarWidgetColor: '#fff',
         compressImageQuality: 0.8,

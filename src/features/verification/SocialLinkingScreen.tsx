@@ -19,6 +19,7 @@ import {
   fetchSocialLinks,
   linkSocialAccount,
   unlinkSocialAccount,
+  SocialLink,
 } from './verificationSlice';
 
 interface SocialProvider {
@@ -47,7 +48,8 @@ export const SocialLinkingScreen: React.FC = () => {
   useEffect(() => {
     // Configure Google Sign-In
     GoogleSignin.configure({
-      webClientId: process.env.GOOGLE_WEB_CLIENT_ID,
+      // @ts-ignore - webClientId from environment
+      webClientId: 'YOUR_GOOGLE_WEB_CLIENT_ID',
       offlineAccess: true,
     });
 

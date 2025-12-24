@@ -17,11 +17,11 @@ interface Props {
 }
 
 const GENDER_OPTIONS: { value: Gender; label: string }[] = [
-  { value: 'male', label: 'Man' },
-  { value: 'female', label: 'Woman' },
-  { value: 'non_binary', label: 'Non-binary' },
-  { value: 'other', label: 'Other' },
-  { value: 'prefer_not_say', label: 'Prefer not to say' },
+  { value: Gender.MALE, label: 'Man' },
+  { value: Gender.FEMALE, label: 'Woman' },
+  { value: Gender.NON_BINARY, label: 'Non-binary' },
+  { value: Gender.OTHER, label: 'Other' },
+  { value: Gender.PREFER_NOT_TO_SAY, label: 'Prefer not to say' },
 ];
 
 export const BasicInfoStep: React.FC<Props> = ({ onNext }) => {
