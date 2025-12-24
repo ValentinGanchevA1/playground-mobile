@@ -38,6 +38,7 @@
     "react-native-image-crop-picker": "^0.51.1",
     "react-native-image-picker": "^8.2.1",
     "react-native-linear-gradient": "^2.8.3",
+    "react-native-map-clustering": "^4.0.0",
     "react-native-maps": "^1.26.19",
     "react-native-permissions": "^5.4.4",
     "react-native-safe-area-context": "^5.5.2",
