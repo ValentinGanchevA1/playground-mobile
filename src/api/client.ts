@@ -3,7 +3,9 @@ import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EventBus } from '../utils/eventBus';
 
-const API_URL = __DEV__ ? 'http://10.0.2.2:3001' : 'https://api.g88.app';
+// Use your local IP for physical device, 10.0.2.2 for emulator
+const DEV_API_URL = 'http://192.168.100.6:3001'; // Change to your local IP
+const API_URL = __DEV__ ? DEV_API_URL : 'https://api.g88.app';
 
 export const apiClient = axios.create({
   baseURL: API_URL,

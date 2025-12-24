@@ -7,7 +7,9 @@ import { addMessage } from '../features/chat/chatSlice';
 import { updateNearbyUser, setUserOnline } from '../features/map/mapSlice';
 import { addReceivedWave } from '../features/interactions/interactionsSlice';
 
-const SOCKET_URL = __DEV__ ? 'http://10.0.2.2:3001' : 'https://api.g88.app';
+// Use your local IP for physical device, 10.0.2.2 for emulator
+const DEV_SOCKET_URL = 'http://192.168.100.6:3001'; // Change to your local IP
+const SOCKET_URL = __DEV__ ? DEV_SOCKET_URL : 'https://api.g88.app';
 
 export const useSocket = () => {
   const socketRef = useRef<Socket | null>(null);
