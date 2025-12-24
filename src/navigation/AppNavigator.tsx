@@ -57,6 +57,9 @@ import { UserProfileScreen } from '../features/discovery/UserProfileScreen';
 import { ProfileCreationScreen } from '../features/profile/ProfileCreationScreen';
 import { ProfileEditScreen } from '../features/profile/ProfileEditScreen';
 import { VerificationScreen } from '../features/verification/VerificationScreen';
+import { PhoneVerificationScreen } from '../features/verification/PhoneVerificationScreen';
+import { PhotoVerificationScreen } from '../features/verification/PhotoVerificationScreen';
+import { IdVerificationScreen } from '../features/verification/IdVerificationScreen';
 import { SocialLinkingScreen } from '../features/verification/SocialLinkingScreen';
 import {
   SettingsScreen,
@@ -173,6 +176,21 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="Verification"
               component={VerificationScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="PhoneVerification"
+              component={PhoneVerificationScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="PhotoVerification"
+              component={PhotoVerificationScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="IdVerification"
+              component={IdVerificationScreen}
               options={{ presentation: 'card' }}
             />
             <Stack.Screen

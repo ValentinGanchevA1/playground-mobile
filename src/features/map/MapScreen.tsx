@@ -1,13 +1,14 @@
 // src/features/map/MapScreen.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { View, StyleSheet, Dimensions, Platform, PermissionsAndroid, ActivityIndicator, Text } from 'react-native';
-import MapView, { Marker, PROVIDER_GOOGLE, Region } from 'react-native-maps';
+import { View, StyleSheet, Dimensions, Platform, PermissionsAndroid, Alert } from 'react-native';
+import MapView, { Marker, PROVIDER_GOOGLE, Region, MarkerPressEvent } from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import { useNavigation } from '@react-navigation/native';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { updateLocation, fetchNearbyUsers, updateUserLocation, NearbyUser } from './mapSlice';
+import { sendWave } from '../interactions/interactionsSlice';
 import { UserMarker } from './components/UserMarker';
-import { UserProfileSheet } from './components/UserProfileSheet';
+import { QuickActionMenu } from './components/QuickActionMenu';
 
 const { width, height } = Dimensions.get('window');
 
@@ -19,10 +20,13 @@ export const MapScreen: React.FC = () => {
   const navigation = useNavigation();
   const mapRef = useRef<MapView>(null);
   const [selectedUser, setSelectedUser] = useState<NearbyUser | null>(null);
+  const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
+  const [menuVisible, setMenuVisible] = useState(false);
   const [hasPermission, setHasPermission] = useState(false);
 
   const dispatch = useAppDispatch();
-  const { currentLocation, nearbyUsers, isLoading, error } = useAppSelector((state) => state.map);
+  const { currentLocation, nearbyUsers } = useAppSelector((state) => state.map);
+  const { isSending } = useAppSelector((state) => state.interactions);
 
   useEffect(() => {
     const init = async () => {
@@ -91,8 +95,40 @@ export const MapScreen: React.FC = () => {
     }));
   };
 
-  const handleMarkerPress = (user: NearbyUser) => {
+  const handleMarkerPress = (user: NearbyUser, event: MarkerPressEvent) => {
+    const { x, y } = event.nativeEvent.position || { x: width / 2, y: height / 2 };
     setSelectedUser(user);
+    setMenuPosition({ x, y });
+    setMenuVisible(true);
+  };
+
+  const handleCloseMenu = () => {
+    setMenuVisible(false);
+    setSelectedUser(null);
+  };
+
+  const handleWave = async () => {
+    if (!selectedUser) return;
+
+    const result = await dispatch(sendWave(selectedUser.id));
+    if (sendWave.fulfilled.match(result)) {
+      Alert.alert('Wave Sent!', `You waved at ${selectedUser.displayName}`);
+      handleCloseMenu();
+    } else if (sendWave.rejected.match(result)) {
+      Alert.alert('Cannot Wave', result.payload as string);
+    }
+  };
+
+  const handleMessage = () => {
+    if (!selectedUser) return;
+    handleCloseMenu();
+    navigation.navigate('Chat', { recipientId: selectedUser.id });
+  };
+
+  const handleViewProfile = () => {
+    if (!selectedUser) return;
+    handleCloseMenu();
+    navigation.navigate('UserProfile', { userId: selectedUser.id });
   };
 
   return (
@@ -109,9 +145,23 @@ export const MapScreen: React.FC = () => {
         }}
         onRegionChangeComplete={handleRegionChange}
         customMapStyle={darkMapStyle}
-        showsUserLocation
         showsMyLocationButton
       >
+        {/* Current user location marker */}
+        {currentLocation && (
+          <Marker
+            coordinate={{
+              latitude: currentLocation.lat,
+              longitude: currentLocation.lng,
+            }}
+            anchor={{ x: 0.5, y: 0.5 }}
+          >
+            <View style={styles.currentUserMarker}>
+              <View style={styles.currentUserDot} />
+            </View>
+          </Marker>
+        )}
+
         {nearbyUsers.map((user) => (
           <Marker
             key={user.id}
@@ -119,21 +169,22 @@ export const MapScreen: React.FC = () => {
               latitude: user.latitude,
               longitude: user.longitude,
             }}
-            onPress={() => handleMarkerPress(user)}
+            onPress={(e) => handleMarkerPress(user, e)}
           >
             <UserMarker user={user} />
           </Marker>
         ))}
       </MapView>
 
-      {selectedUser && (
-        <UserProfileSheet
+      {menuVisible && selectedUser && (
+        <QuickActionMenu
           user={selectedUser}
-          onClose={() => setSelectedUser(null)}
-          onMessage={() => {
-            setSelectedUser(null);
-            navigation.navigate('Chat', { recipientId: selectedUser.id });
-          }}
+          position={menuPosition}
+          onWave={handleWave}
+          onMessage={handleMessage}
+          onViewProfile={handleViewProfile}
+          onClose={handleCloseMenu}
+          isWaving={isSending}
         />
       )}
     </View>
@@ -147,6 +198,22 @@ const styles = StyleSheet.create({
   map: {
     width,
     height,
+  },
+  currentUserMarker: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: 'rgba(0, 122, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  currentUserDot: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: '#007AFF',
+    borderWidth: 2,
+    borderColor: '#fff',
   },
 });
 

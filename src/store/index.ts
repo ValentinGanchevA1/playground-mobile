@@ -7,6 +7,7 @@ import discoveryReducer from '../features/discovery/discoverySlice';
 import profileReducer from '../features/profile/profileSlice';
 import profileEditReducer from '../features/profile/profileEditSlice';
 import verificationReducer from '../features/verification/verificationSlice';
+import interactionsReducer from '../features/interactions/interactionsSlice';
 
 export const store = configureStore({
   reducer: {
@@ -17,6 +18,7 @@ export const store = configureStore({
     profile: profileReducer,
     profileEdit: profileEditReducer,
     verification: verificationReducer,
+    interactions: interactionsReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

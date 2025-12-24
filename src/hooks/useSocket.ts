@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from './redux';
 import { addMessage } from '../features/chat/chatSlice';
 import { updateNearbyUser, setUserOnline } from '../features/map/mapSlice';
+import { addReceivedWave } from '../features/interactions/interactionsSlice';
 
 const SOCKET_URL = __DEV__ ? 'http://10.0.2.2:3001' : 'https://api.g88.app';
 
@@ -38,6 +39,10 @@ export const useSocket = () => {
 
     socketRef.current.on('user:online', ({ userId }) => {
       dispatch(setUserOnline(userId));
+    });
+
+    socketRef.current.on('wave:receive', (wave) => {
+      dispatch(addReceivedWave(wave));
     });
 
     socketRef.current.on('disconnect', (reason) => {
