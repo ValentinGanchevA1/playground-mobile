@@ -12,6 +12,7 @@ interface SocialLink {
   metadata?: {
     username?: string;
     followers?: number;
+    verified?: boolean;
   };
 }
 

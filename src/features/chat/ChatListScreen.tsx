@@ -11,7 +11,7 @@ export const ChatListScreen: React.FC = () => {
   const renderChatItem = ({ item }: { item: any }) => (
     <TouchableOpacity
       style={styles.chatItem}
-      onPress={() => navigation.navigate('Chat' as never, { chatId: item.id } as never)}
+      onPress={() => navigation.navigate('Chat', { recipientId: item.id, recipientName: item.participantName })}
     >
       <View style={styles.avatar}>
         <Text style={styles.avatarText}>

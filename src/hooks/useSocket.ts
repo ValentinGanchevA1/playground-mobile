@@ -4,7 +4,7 @@ import { io, Socket } from 'socket.io-client';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useAppDispatch } from './redux';
 import { addMessage } from '../features/chat/chatSlice';
-import { updateNearbyUser } from '../features/map/mapSlice';
+import { updateNearbyUser, setUserOnline } from '../features/map/mapSlice';
 
 const SOCKET_URL = __DEV__ ? 'http://10.0.2.2:3001' : 'https://api.g88.app';
 

@@ -195,7 +195,7 @@ export const DiscoveryScreen: React.FC = () => {
 
   const handleViewProfile = () => {
     if (currentProfile) {
-      navigation.navigate('UserProfile' as never, { userId: currentProfile.id } as never);
+      navigation.navigate('UserProfile', { userId: currentProfile.id });
     }
   };
 
@@ -340,7 +340,7 @@ export const DiscoveryScreen: React.FC = () => {
           <Icon name="tune-vertical" size={28} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.logoText}>G88</Text>
-        <TouchableOpacity onPress={() => navigation.navigate('Matches' as never)}>
+        <TouchableOpacity onPress={() => navigation.navigate('Matches')}>
           <Icon name="heart-multiple" size={28} color="#00d4ff" />
         </TouchableOpacity>
       </View>
@@ -410,7 +410,7 @@ export const DiscoveryScreen: React.FC = () => {
               style={styles.matchSendMessage}
               onPress={() => {
                 setShowMatch(null);
-                navigation.navigate('Chat' as never, { recipientId: showMatch?.id } as never);
+                navigation.navigate('Chat', { recipientId: showMatch?.id || '' });
               }}
             >
               <Text style={styles.matchSendMessageText}>Send Message</Text>
@@ -451,7 +451,7 @@ export const DiscoveryScreen: React.FC = () => {
               style={styles.premiumUpgradeButton}
               onPress={() => {
                 setShowPremiumModal(false);
-                navigation.navigate('Premium' as never);
+                navigation.navigate('Premium');
               }}
             >
               <Text style={styles.premiumUpgradeButtonText}>Upgrade to Premium</Text>

@@ -3,9 +3,11 @@ import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../../api/client';
 import { User } from './types';
 
+type EditableFields = Partial<User & User['profile']> & { [key: string]: any };
+
 interface ProfileEditState {
   originalData: User | null;
-  editedData: Partial<User & User['profile']>;
+  editedData: EditableFields;
   hasChanges: boolean;
   isSaving: boolean;
   error: string | null;

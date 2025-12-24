@@ -207,6 +207,34 @@ export const ProfileScreen: React.FC = () => {
         </TouchableOpacity>
       </View>
 
+      {/* Gamification Cards */}
+      <View style={styles.gamificationRow}>
+        <TouchableOpacity
+          style={styles.gamificationCard}
+          onPress={() => navigation.navigate('Achievements' as never)}
+        >
+          <Icon name="trophy" size={28} color="#FFD700" />
+          <Text style={styles.gamificationTitle}>Achievements</Text>
+          <Text style={styles.gamificationSubtitle}>View badges</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.gamificationCard}
+          onPress={() => navigation.navigate('Leaderboard' as never)}
+        >
+          <Icon name="podium-gold" size={28} color="#00d4ff" />
+          <Text style={styles.gamificationTitle}>Leaderboard</Text>
+          <Text style={styles.gamificationSubtitle}>Compete</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.gamificationCard}
+          onPress={() => navigation.navigate('Gifts' as never)}
+        >
+          <Icon name="gift" size={28} color="#E91E63" />
+          <Text style={styles.gamificationTitle}>Gifts</Text>
+          <Text style={styles.gamificationSubtitle}>Send & receive</Text>
+        </TouchableOpacity>
+      </View>
+
       {/* Photo Grid */}
       {photos.length > 0 ? (
         <View style={styles.section}>
@@ -521,6 +549,30 @@ const styles = StyleSheet.create({
   actionButtonText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  gamificationRow: {
+    flexDirection: 'row',
+    paddingHorizontal: 20,
+    marginTop: 16,
+    gap: 10,
+  },
+  gamificationCard: {
+    flex: 1,
+    alignItems: 'center',
+    backgroundColor: '#1a1a24',
+    paddingVertical: 16,
+    borderRadius: 12,
+  },
+  gamificationTitle: {
+    color: '#fff',
+    fontWeight: '600',
+    fontSize: 12,
+    marginTop: 8,
+  },
+  gamificationSubtitle: {
+    color: '#666',
+    fontSize: 10,
+    marginTop: 2,
   },
   section: {
     padding: 20,

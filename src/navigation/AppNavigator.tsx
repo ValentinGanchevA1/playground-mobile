@@ -6,6 +6,39 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppSelector } from '../hooks/redux';
 
+// Navigation types
+export type RootStackParamList = {
+  Auth: undefined;
+  ProfileCreation: undefined;
+  Main: undefined;
+  Chat: { recipientId: string; recipientName?: string };
+  UserProfile: { userId: string };
+  ProfileEdit: undefined;
+  Verification: undefined;
+  PhoneVerification: undefined;
+  PhotoVerification: undefined;
+  IdVerification: undefined;
+  SocialLinking: undefined;
+  Settings: undefined;
+  Privacy: undefined;
+  Help: undefined;
+  About: undefined;
+  Achievements: undefined;
+  Leaderboard: undefined;
+  Gifts: undefined;
+  CreateEvent: undefined;
+  EventDetail: { eventId: string };
+  LikesReceived: undefined;
+  Matches: undefined;
+  Premium: undefined;
+};
+
+declare global {
+  namespace ReactNavigation {
+    interface RootParamList extends RootStackParamList {}
+  }
+}
+
 // Auth
 import { AuthScreen } from '../features/auth/AuthScreen';
 
@@ -14,6 +47,9 @@ import { MapScreen } from '../features/map/MapScreen';
 import { DiscoveryScreen } from '../features/discovery/DiscoveryScreen';
 import { ChatListScreen } from '../features/chat/ChatListScreen';
 import { ProfileScreen } from '../features/profile/ProfileScreen';
+import { EventsScreen } from '../features/events/EventsScreen';
+import { CreateEventScreen } from '../features/events/CreateEventScreen';
+import { EventDetailScreen } from '../features/events/EventDetailScreen';
 
 // Stack Screens
 import { ChatScreen } from '../features/chat/ChatScreen';
@@ -29,7 +65,12 @@ import {
   AboutScreen,
 } from '../features/settings';
 
-const Stack = createStackNavigator();
+// Gamification & Gifts
+import { AchievementsScreen } from '../features/gamification/AchievementsScreen';
+import { LeaderboardScreen } from '../features/gamification/LeaderboardScreen';
+import { GiftsScreen } from '../features/gifts/GiftsScreen';
+
+const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
 const MainTabs = () => (
@@ -67,6 +108,15 @@ const MainTabs = () => (
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="map-marker-radius" size={size} color={color} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Events"
+      component={EventsScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="calendar-star" size={size} color={color} />
         ),
       }}
     />
@@ -148,6 +198,31 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="About"
               component={AboutScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Achievements"
+              component={AchievementsScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Leaderboard"
+              component={LeaderboardScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Gifts"
+              component={GiftsScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="CreateEvent"
+              component={CreateEventScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="EventDetail"
+              component={EventDetailScreen}
               options={{ presentation: 'card' }}
             />
           </>

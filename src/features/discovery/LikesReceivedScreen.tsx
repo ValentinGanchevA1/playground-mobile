@@ -57,7 +57,7 @@ export const LikesReceivedScreen: React.FC = () => {
       setShowUpgradeModal(true);
       return;
     }
-    navigation.navigate('UserProfile' as never, { userId: like.user.id } as never);
+    navigation.navigate('UserProfile', { userId: like.user.id });
   };
 
   const renderLikeCard = ({ item }: { item: LikeReceived }) => {
@@ -126,7 +126,7 @@ export const LikesReceivedScreen: React.FC = () => {
       </Text>
       <TouchableOpacity
         style={styles.upgradeButton}
-        onPress={() => navigation.navigate('Premium' as never)}
+        onPress={() => navigation.navigate('Premium')}
       >
         <Text style={styles.upgradeButtonText}>Upgrade Now</Text>
       </TouchableOpacity>

@@ -132,7 +132,7 @@ export const MapScreen: React.FC = () => {
           onClose={() => setSelectedUser(null)}
           onMessage={() => {
             setSelectedUser(null);
-            navigation.navigate('Chat' as never, { recipientId: selectedUser.id } as never);
+            navigation.navigate('Chat', { recipientId: selectedUser.id });
           }}
         />
       )}

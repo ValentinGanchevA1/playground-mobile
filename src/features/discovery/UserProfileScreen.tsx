@@ -60,7 +60,7 @@ export const UserProfileScreen: React.FC = () => {
     if (likeProfile.fulfilled.match(result)) {
       if (result.payload.matched) {
         Alert.alert("It's a Match!", `You and ${user.displayName} liked each other!`, [
-          { text: 'Send Message', onPress: () => navigation.navigate('Chat' as never, { recipientId: user.id } as never) },
+          { text: 'Send Message', onPress: () => navigation.navigate('Chat', { recipientId: user.id }) },
           { text: 'Keep Browsing', onPress: () => navigation.goBack() },
         ]);
       } else {
@@ -88,7 +88,7 @@ export const UserProfileScreen: React.FC = () => {
 
   const handleMessage = () => {
     if (!user) return;
-    navigation.navigate('Chat' as never, { recipientId: user.id } as never);
+    navigation.navigate('Chat', { recipientId: user.id });
   };
 
   const handleReport = () => {

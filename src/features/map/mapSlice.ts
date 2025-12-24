@@ -81,6 +81,18 @@ const mapSlice = createSlice({
     setError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
     },
+    updateNearbyUser: (state, action: PayloadAction<Partial<NearbyUser> & { id: string }>) => {
+      const index = state.nearbyUsers.findIndex((u) => u.id === action.payload.id);
+      if (index !== -1) {
+        state.nearbyUsers[index] = { ...state.nearbyUsers[index], ...action.payload };
+      }
+    },
+    setUserOnline: (state, action: PayloadAction<string>) => {
+      const index = state.nearbyUsers.findIndex((u) => u.id === action.payload);
+      if (index !== -1) {
+        state.nearbyUsers[index].isOnline = true;
+      }
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -106,7 +118,7 @@ const mapSlice = createSlice({
   },
 });
 
-export const { updateLocation, setNearbyUsers, setError } = mapSlice.actions;
+export const { updateLocation, setNearbyUsers, setError, updateNearbyUser, setUserOnline } = mapSlice.actions;
 export type { NearbyUser };
 
 export default mapSlice.reducer;
