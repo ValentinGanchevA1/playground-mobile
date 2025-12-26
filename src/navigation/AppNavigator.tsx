@@ -31,6 +31,11 @@ export type RootStackParamList = {
   LikesReceived: undefined;
   Matches: undefined;
   Premium: undefined;
+  // Trading
+  ListingDetail: { listingId: string };
+  CreateListing: undefined;
+  MyListings: undefined;
+  Offers: undefined;
 };
 
 declare global {
@@ -72,6 +77,13 @@ import {
 import { AchievementsScreen } from '../features/gamification/AchievementsScreen';
 import { LeaderboardScreen } from '../features/gamification/LeaderboardScreen';
 import { GiftsScreen } from '../features/gifts/GiftsScreen';
+
+// Trading
+import { TradingScreen } from '../features/trading/TradingScreen';
+import { ListingDetailScreen } from '../features/trading/ListingDetailScreen';
+import { CreateListingScreen } from '../features/trading/CreateListingScreen';
+import { MyListingsScreen } from '../features/trading/MyListingsScreen';
+import { OffersScreen } from '../features/trading/OffersScreen';
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -120,6 +132,15 @@ const MainTabs = () => (
       options={{
         tabBarIcon: ({ color, size }) => (
           <Icon name="calendar-star" size={size} color={color} />
+        ),
+      }}
+    />
+    <Tab.Screen
+      name="Trade"
+      component={TradingScreen}
+      options={{
+        tabBarIcon: ({ color, size }) => (
+          <Icon name="swap-horizontal" size={size} color={color} />
         ),
       }}
     />
@@ -241,6 +262,27 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="EventDetail"
               component={EventDetailScreen}
+              options={{ presentation: 'card' }}
+            />
+            {/* Trading Screens */}
+            <Stack.Screen
+              name="ListingDetail"
+              component={ListingDetailScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="CreateListing"
+              component={CreateListingScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="MyListings"
+              component={MyListingsScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="Offers"
+              component={OffersScreen}
               options={{ presentation: 'card' }}
             />
           </>
