@@ -1,5 +1,5 @@
 // src/features/map/MapScreen.tsx
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useCallback } from 'react';
 import { View, StyleSheet, Dimensions, Platform, PermissionsAndroid, Alert, Text } from 'react-native';
 import MapView from 'react-native-map-clustering';
 import { Marker, PROVIDER_GOOGLE, Region, MarkerPressEvent } from 'react-native-maps';
@@ -23,6 +23,19 @@ import { QuickActionMenu } from './components/QuickActionMenu';
 
 const { width, height } = Dimensions.get('window');
 
+// Cluster type from react-native-map-clustering
+interface ClusterProps {
+  id: number;
+  geometry: {
+    coordinates: [number, number];
+  };
+  onPress: () => void;
+  properties: {
+    point_count: number;
+    cluster_id: number;
+  };
+}
+
 const calculateRadiusFromZoom = (latitudeDelta: number): number => {
   return Math.round(latitudeDelta * 111);
 };
@@ -34,7 +47,6 @@ export const MapScreen: React.FC = () => {
   const [selectedEvent, setSelectedEvent] = useState<NearbyEvent | null>(null);
   const [menuPosition, setMenuPosition] = useState({ x: 0, y: 0 });
   const [menuVisible, setMenuVisible] = useState(false);
-  const [hasPermission, setHasPermission] = useState(false);
 
   const dispatch = useAppDispatch();
   const currentLocation = useAppSelector(selectCurrentLocation);
@@ -42,20 +54,7 @@ export const MapScreen: React.FC = () => {
   const events = useAppSelector(selectFilteredEvents);
   const { isSending } = useAppSelector((state) => state.interactions);
 
-  useEffect(() => {
-    const init = async () => {
-      const granted = await requestLocationPermission();
-      if (granted) {
-        setHasPermission(true);
-        startLocationTracking();
-      }
-    };
-    init();
-
-    return () => Geolocation.stopObserving();
-  }, []);
-
-  const requestLocationPermission = async (): Promise<boolean> => {
+  const requestLocationPermission = useCallback(async (): Promise<boolean> => {
     if (Platform.OS === 'ios') {
       const status = await Geolocation.requestAuthorization('whenInUse');
       return status === 'granted';
@@ -74,12 +73,12 @@ export const MapScreen: React.FC = () => {
       );
       return granted === PermissionsAndroid.RESULTS.GRANTED;
     } catch (err) {
-      console.warn(err);
+      if (__DEV__) console.warn(err);
       return false;
     }
-  };
+  }, []);
 
-  const startLocationTracking = () => {
+  const startLocationTracking = useCallback(() => {
     Geolocation.watchPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
@@ -87,7 +86,9 @@ export const MapScreen: React.FC = () => {
         dispatch(updateUserLocation({ lat: latitude, lng: longitude }));
         dispatch(fetchMapData({ lat: latitude, lng: longitude, radius: 5 }));
       },
-      (error) => console.error('Location error:', error),
+      (error) => {
+        if (__DEV__) console.error('Location error:', error);
+      },
       {
         enableHighAccuracy: true,
         distanceFilter: 50,
@@ -95,7 +96,19 @@ export const MapScreen: React.FC = () => {
         fastestInterval: 5000,
       }
     );
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    const init = async () => {
+      const granted = await requestLocationPermission();
+      if (granted) {
+        startLocationTracking();
+      }
+    };
+    init();
+
+    return () => Geolocation.stopObserving();
+  }, [requestLocationPermission, startLocationTracking]);
 
   const handleRegionChange = (region: Region) => {
     dispatch(fetchMapData({
@@ -161,7 +174,7 @@ export const MapScreen: React.FC = () => {
   };
 
   // Custom cluster component
-  const renderCluster = (cluster: any) => {
+  const renderCluster = (cluster: ClusterProps) => {
     const { id, geometry, onPress, properties } = cluster;
     const points = properties.point_count;
 

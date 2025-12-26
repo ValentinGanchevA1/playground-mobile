@@ -1,7 +1,7 @@
 // src/features/map/mapSelectors.ts
 import { createSelector } from '@reduxjs/toolkit';
 import { RootState } from '../../store';
-import { NearbyUser, NearbyEvent, MarkerCategory } from './mapSlice';
+import { NearbyEvent, MarkerCategory } from './mapSlice';
 
 // Base selectors
 export const selectMapState = (state: RootState) => state.map;

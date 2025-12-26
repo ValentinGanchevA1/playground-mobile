@@ -6,7 +6,6 @@ import {
   Image,
   TouchableOpacity,
   StyleSheet,
-  Dimensions,
 } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NearbyEvent } from '../mapSlice';
@@ -112,8 +111,6 @@ export const EventQuickInfo: React.FC<EventQuickInfoProps> = ({
     </View>
   );
 };
-
-const { width } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
   container: {

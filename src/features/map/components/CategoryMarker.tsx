@@ -2,7 +2,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { MapMarker, CATEGORY_COLORS } from '../mapSelectors';
+import { MapMarker } from '../mapSelectors';
 
 interface CategoryMarkerProps {
   marker: MapMarker;

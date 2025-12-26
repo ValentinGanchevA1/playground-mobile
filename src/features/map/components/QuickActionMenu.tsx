@@ -9,12 +9,16 @@ import {
   Dimensions,
   Image,
 } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { NearbyUser } from '../mapSlice';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 const MENU_WIDTH = 180;
-const MENU_HEIGHT = 120;
+const MENU_HEIGHT = 140; // Approximate menu height with padding
+const TAB_BAR_HEIGHT = 60; // Bottom tab bar height (without safe area, added separately)
+const FILTER_BAR_HEIGHT = 50; // Filter bar at top
+const MARKER_HEIGHT = 60; // Height of marker + pointer
 
 interface QuickActionMenuProps {
   user: NearbyUser;
@@ -35,6 +39,7 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
   onClose,
   isWaving = false,
 }) => {
+  const insets = useSafeAreaInsets();
   const scaleAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
 
@@ -52,31 +57,51 @@ export const QuickActionMenu: React.FC<QuickActionMenuProps> = ({
         useNativeDriver: true,
       }),
     ]).start();
-  }, []);
+  }, [scaleAnim, opacityAnim]);
 
   const handleClose = () => {
-    Animated.parallel([
-      Animated.timing(scaleAnim, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacityAnim, {
-        toValue: 0,
-        duration: 150,
-        useNativeDriver: true,
-      }),
-    ]).start(() => onClose());
+    // Call onClose immediately to update parent state and allow new marker presses
+    onClose();
   };
+
+  // Calculate safe boundaries using device insets
+  const topBoundary = insets.top + FILTER_BAR_HEIGHT + 16;
+  const bottomBoundary = SCREEN_HEIGHT - insets.bottom - TAB_BAR_HEIGHT - 16;
+  const usableHeight = bottomBoundary - topBoundary;
 
   // Calculate menu position to keep it on screen
   let menuX = position.x - MENU_WIDTH / 2;
-  let menuY = position.y - MENU_HEIGHT - 60; // Above the marker
+  let menuY = position.y - MENU_HEIGHT - MARKER_HEIGHT; // Default: above the marker
 
-  // Adjust if too close to edges
-  if (menuX < 16) menuX = 16;
-  if (menuX + MENU_WIDTH > SCREEN_WIDTH - 16) menuX = SCREEN_WIDTH - MENU_WIDTH - 16;
-  if (menuY < 100) menuY = position.y + 60; // Show below if too close to top
+  // Horizontal bounds check
+  if (menuX < 16) {
+    menuX = 16;
+  } else if (menuX + MENU_WIDTH > SCREEN_WIDTH - 16) {
+    menuX = SCREEN_WIDTH - MENU_WIDTH - 16;
+  }
+
+  // Vertical positioning logic
+  const menuTopIfAbove = position.y - MENU_HEIGHT - MARKER_HEIGHT;
+  const menuBottomIfBelow = position.y + MARKER_HEIGHT;
+
+  // Determine if we can show above or below
+  const canShowAbove = menuTopIfAbove >= topBoundary;
+  const canShowBelow = menuBottomIfBelow + MENU_HEIGHT <= bottomBoundary;
+
+  if (canShowAbove) {
+    // Preferred: show above marker
+    menuY = menuTopIfAbove;
+  } else if (canShowBelow) {
+    // Fallback: show below marker
+    menuY = menuBottomIfBelow;
+  } else {
+    // Edge case: marker is in a position where neither works well
+    // Center the menu in the usable area
+    menuY = topBoundary + (usableHeight - MENU_HEIGHT) / 2;
+  }
+
+  // Final safety clamp to ensure menu stays in bounds
+  menuY = Math.max(topBoundary, Math.min(menuY, bottomBoundary - MENU_HEIGHT));
 
   return (
     <View style={StyleSheet.absoluteFill}>

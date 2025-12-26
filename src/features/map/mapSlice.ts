@@ -1,6 +1,18 @@
 // src/features/map/mapSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { AxiosError } from 'axios';
 import { apiClient } from '../../api/client';
+
+// Helper to extract error message from unknown error
+const getErrorMessage = (error: unknown, fallback: string): string => {
+  if (error instanceof AxiosError) {
+    return error.response?.data?.message || fallback;
+  }
+  if (error instanceof Error) {
+    return error.message;
+  }
+  return fallback;
+};
 
 interface Location {
   lat: number;
@@ -81,8 +93,8 @@ export const updateUserLocation = createAsyncThunk(
         longitude: lng,
       });
       return { lat, lng };
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to update location');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to update location'));
     }
   }
 );
@@ -101,8 +113,8 @@ export const fetchNearbyUsers = createAsyncThunk(
         },
       });
       return data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch nearby users');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to fetch nearby users'));
     }
   }
 );
@@ -121,8 +133,8 @@ export const fetchMapData = createAsyncThunk(
         },
       });
       return data;
-    } catch (error: any) {
-      return rejectWithValue(error.response?.data?.message || 'Failed to fetch map data');
+    } catch (error: unknown) {
+      return rejectWithValue(getErrorMessage(error, 'Failed to fetch map data'));
     }
   }
 );
