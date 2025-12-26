@@ -71,7 +71,7 @@ export const restoreSession = createAsyncThunk(
         throw new Error('Session expired');
       }
       return result.payload;
-    } catch (error: any) {
+    } catch {
       await AsyncStorage.multiRemove(['accessToken', 'refreshToken']);
       return rejectWithValue('Session expired');
     }

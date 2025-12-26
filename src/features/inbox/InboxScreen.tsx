@@ -1,5 +1,5 @@
 // src/features/inbox/InboxScreen.tsx
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -27,6 +27,7 @@ interface ChatItem {
   unreadCount: number;
   listingTitle?: string;
   listingPhoto?: string;
+  offerId?: string;
 }
 
 export const InboxScreen: React.FC = () => {
@@ -93,6 +94,7 @@ export const InboxScreen: React.FC = () => {
           unreadCount: offer.status === 'accepted' ? 1 : 0,
           listingTitle: offer.listing?.title,
           listingPhoto: offer.listing?.photos?.[0],
+          offerId: offer.id,
         });
       });
 
@@ -111,6 +113,7 @@ export const InboxScreen: React.FC = () => {
           unreadCount: 1,
           listingTitle: offer.listing?.title,
           listingPhoto: offer.listing?.photos?.[0],
+          offerId: offer.id,
         });
       });
 
@@ -128,8 +131,8 @@ export const InboxScreen: React.FC = () => {
         recipientId: item.participantId,
         recipientName: item.participantName,
       });
-    } else if (item.type === 'buying' || item.type === 'selling') {
-      navigation.navigate('Offers');
+    } else if ((item.type === 'buying' || item.type === 'selling') && item.offerId) {
+      navigation.navigate('TradeOfferDetail', { offerId: item.offerId });
     }
   };
 

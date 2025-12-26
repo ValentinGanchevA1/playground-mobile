@@ -1,5 +1,5 @@
 // src/features/gamification/LeaderboardScreen.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -56,7 +56,7 @@ export const LeaderboardScreen: React.FC = () => {
   const [selectedType, setSelectedType] = useState<LeaderboardType>('xp');
   const [selectedPeriod, setSelectedPeriod] = useState<LeaderboardPeriod>('weekly');
 
-  const fetchLeaderboard = async (refresh = false) => {
+  const fetchLeaderboard = useCallback(async (refresh = false) => {
     if (refresh) setIsRefreshing(true);
     else setIsLoading(true);
 
@@ -72,11 +72,11 @@ export const LeaderboardScreen: React.FC = () => {
       setIsLoading(false);
       setIsRefreshing(false);
     }
-  };
+  }, [selectedType, selectedPeriod]);
 
   useEffect(() => {
     fetchLeaderboard();
-  }, [selectedType, selectedPeriod]);
+  }, [fetchLeaderboard]);
 
   const renderPodium = () => {
     if (!data || data.entries.length < 3) return null;

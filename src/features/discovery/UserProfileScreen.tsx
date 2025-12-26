@@ -1,5 +1,5 @@
 // src/features/discovery/UserProfileScreen.tsx
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -38,21 +38,21 @@ export const UserProfileScreen: React.FC = () => {
   const [currentPhotoIndex, setCurrentPhotoIndex] = useState(0);
   const scrollY = useRef(new Animated.Value(0)).current;
 
-  useEffect(() => {
-    fetchUserProfile();
-  }, [userId]);
-
-  const fetchUserProfile = async () => {
+  const fetchUserProfile = useCallback(async () => {
     try {
       const { data } = await apiClient.get(`/users/${userId}`);
       setUser(data);
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to load profile');
       navigation.goBack();
     } finally {
       setLoading(false);
     }
-  };
+  }, [userId, navigation]);
+
+  useEffect(() => {
+    fetchUserProfile();
+  }, [fetchUserProfile]);
 
   const handleLike = async () => {
     if (!user) return;
@@ -86,10 +86,6 @@ export const UserProfileScreen: React.FC = () => {
     }
   };
 
-  const handleMessage = () => {
-    if (!user) return;
-    navigation.navigate('Chat', { recipientId: user.id });
-  };
 
   const handleReport = () => {
     Alert.alert('Report User', 'Why are you reporting this user?', [
@@ -105,7 +101,7 @@ export const UserProfileScreen: React.FC = () => {
     try {
       await apiClient.post('/reports', { userId, reason });
       Alert.alert('Reported', 'Thank you for your report. We will review it.');
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Failed to submit report');
     }
   };

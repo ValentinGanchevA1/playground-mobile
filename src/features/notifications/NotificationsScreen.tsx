@@ -25,6 +25,7 @@ interface Notification {
     listingId?: string;
     eventId?: string;
     chatId?: string;
+    offerId?: string;
   };
 }
 
@@ -47,7 +48,7 @@ const MOCK_NOTIFICATIONS: Notification[] = [
     body: 'Someone made an offer on your Vintage Watch',
     timestamp: new Date(Date.now() - 1000 * 60 * 30),
     read: false,
-    data: { listingId: 'listing-1' },
+    data: { listingId: 'listing-1', offerId: 'offer-1' },
   },
   {
     id: '3',
@@ -142,7 +143,9 @@ export const NotificationsScreen: React.FC = () => {
         }
         break;
       case 'offer':
-        navigation.navigate('Offers');
+        if (notification.data?.offerId) {
+          navigation.navigate('TradeOfferDetail', { offerId: notification.data.offerId });
+        }
         break;
       case 'event':
         if (notification.data?.eventId) {
@@ -152,9 +155,6 @@ export const NotificationsScreen: React.FC = () => {
     }
   };
 
-  const handleClearAll = () => {
-    setNotifications([]);
-  };
 
   const handleMarkAllRead = () => {
     setNotifications((prev) => prev.map((n) => ({ ...n, read: true })));

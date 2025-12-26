@@ -73,7 +73,7 @@ export const MarketScreen: React.FC = () => {
     }
     dispatch(fetchMyListings());
     dispatch(fetchFavorites());
-  }, [currentLocation, filters]);
+  }, [currentLocation, filters, dispatch, fetchListings]);
 
   const handleCategorySelect = (category: string) => {
     dispatch(

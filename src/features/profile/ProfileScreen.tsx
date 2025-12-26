@@ -16,7 +16,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
 import { logout, fetchCurrentUser } from '../auth/authSlice';
 import {
-  User,
   SubscriptionTier,
   GOAL_OPTIONS,
   SOCIAL_PROVIDER_CONFIG,

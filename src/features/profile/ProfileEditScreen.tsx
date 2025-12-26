@@ -149,7 +149,7 @@ export const ProfileEditScreen: React.FC = () => {
               style={[styles.input, styles.ageInput]}
               value={currentData.age?.toString() || ''}
               onChangeText={(text) => {
-                const age = parseInt(text) || null;
+                const age = parseInt(text, 10) || null;
                 dispatch(updateField({ field: 'age', value: age }));
               }}
               keyboardType="number-pad"

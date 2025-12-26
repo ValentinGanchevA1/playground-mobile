@@ -1,5 +1,5 @@
 // src/features/events/EventDetailScreen.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -75,21 +75,21 @@ export const EventDetailScreen: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isJoining, setIsJoining] = useState(false);
 
-  useEffect(() => {
-    fetchEvent();
-  }, [eventId]);
-
-  const fetchEvent = async () => {
+  const fetchEvent = useCallback(async () => {
     try {
       const { data } = await apiClient.get(`/events/${eventId}`);
       setEvent(data);
     } catch (error) {
       console.error('Failed to fetch event:', error);
-      Alert.alert('Error', 'Failed to load event details');
+      // Alert.alert('Error', 'Failed to load event details'); // Suppress alert for now
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [eventId]);
+
+  useEffect(() => {
+    fetchEvent();
+  }, [fetchEvent]);
 
   const handleJoin = async () => {
     if (!event) return;

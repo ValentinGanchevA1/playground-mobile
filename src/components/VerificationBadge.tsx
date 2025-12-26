@@ -17,9 +17,9 @@ interface Props {
 
 export const VerificationBadge: React.FC<Props> = ({
                                                      badges,
-                                                     score = 0,
+                                                     score: _score = 0,
                                                      size = 'medium',
-                                                     showTooltip = false,
+                                                     showTooltip: _showTooltip = false,
                                                      onPress,
                                                    }) => {
   const isFullyVerified = badges.phone && badges.photo;

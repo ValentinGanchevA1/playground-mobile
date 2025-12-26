@@ -1,5 +1,5 @@
 // src/features/verification/PhotoVerificationScreen.tsx
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -28,7 +28,6 @@ export const PhotoVerificationScreen: React.FC = () => {
     (state) => state.verification
   );
 
-  const cameraRef = useRef<any>(null);
   const [step, setStep] = useState<Step>('intro');
   const [capturedPhoto, setCapturedPhoto] = useState<string | null>(null);
 
@@ -59,7 +58,7 @@ export const PhotoVerificationScreen: React.FC = () => {
   const handleSubmit = async () => {
     if (!capturedPhoto) return;
 
-    const result = await dispatch(submitPhotoVerification(capturedPhoto));
+    await dispatch(submitPhotoVerification(capturedPhoto));
     setStep('result');
   };
 

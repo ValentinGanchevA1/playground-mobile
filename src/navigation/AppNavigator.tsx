@@ -7,7 +7,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
 import { useAppSelector } from '../hooks/redux';
-import ActionHub from '../components/ActionHub';
 
 // Navigation types
 export type RootStackParamList = {
@@ -40,6 +39,7 @@ export type RootStackParamList = {
   CreateListing: undefined;
   MyListings: undefined;
   Offers: undefined;
+  TradeOfferDetail: { offerId: string };
 };
 
 declare global {
@@ -89,6 +89,7 @@ import { ListingDetailScreen } from '../features/trading/ListingDetailScreen';
 import { CreateListingScreen } from '../features/trading/CreateListingScreen';
 import { MyListingsScreen } from '../features/trading/MyListingsScreen';
 import { OffersScreen } from '../features/trading/OffersScreen';
+import { TradeOfferDetailScreen } from '../features/trading/TradeOfferDetailScreen';
 
 // Notifications
 import { NotificationsScreen } from '../features/notifications/NotificationsScreen';
@@ -101,6 +102,7 @@ const SafeListingDetailScreen = withScreenErrorBoundary(ListingDetailScreen, 'Li
 const SafeCreateListingScreen = withScreenErrorBoundary(CreateListingScreen, 'Create Listing');
 const SafeOffersScreen = withScreenErrorBoundary(OffersScreen, 'Offers');
 const SafeMarketScreen = withScreenErrorBoundary(MarketScreen, 'Market');
+const SafeTradeOfferDetailScreen = withScreenErrorBoundary(TradeOfferDetailScreen, 'Trade Offer Detail');
 
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
@@ -109,12 +111,11 @@ const Tab = createBottomTabNavigator();
 const EmptyComponent = () => null;
 
 // Custom Tab Bar with center FAB
-const CustomTabBar = ({ state, descriptors, navigation, onFabPress }: any) => {
+const CustomTabBar = ({ state, navigation, onFabPress }: any) => {
   return (
     <View style={tabBarStyles.container}>
       <View style={tabBarStyles.tabBar}>
         {state.routes.map((route: any, index: number) => {
-          const { options } = descriptors[route.key];
           const isFocused = state.index === index;
 
           // Handle center FAB
@@ -149,7 +150,6 @@ const CustomTabBar = ({ state, descriptors, navigation, onFabPress }: any) => {
           };
 
           const iconName = getTabIcon(route.name);
-          const label = getTabLabel(route.name);
 
           return (
             <TouchableOpacity
@@ -186,27 +186,21 @@ const getTabIcon = (name: string): string => {
   }
 };
 
-const getTabLabel = (name: string): string => {
-  switch (name) {
-    case 'Map': return 'Map';
-    case 'Discover': return 'Discover';
-    case 'Market': return 'Market';
-    case 'Inbox': return 'Inbox';
-    case 'Profile': return 'Profile';
-    default: return name;
-  }
-};
-
 const MainTabs = () => {
   const [showActionHub, setShowActionHub] = useState(false);
+
+  const renderTabBar = useCallback(
+    (props: any) => (
+      <CustomTabBar {...props} onFabPress={() => setShowActionHub(true)} />
+    ),
+    []
+  );
 
   return (
     <>
       <Tab.Navigator
         initialRouteName="Map"
-        tabBar={(props) => (
-          <CustomTabBar {...props} onFabPress={() => setShowActionHub(true)} />
-        )}
+        tabBar={renderTabBar}
         screenOptions={{
           headerShown: false,
         }}
@@ -229,10 +223,9 @@ const MainTabs = () => {
 };
 
 // ActionHub Modal Component
-import { Modal, Animated, TouchableWithoutFeedback, Text, Dimensions } from 'react-native';
+import { Modal, Animated, TouchableWithoutFeedback, Text } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 
-const { width, height } = Dimensions.get('window');
 
 const ActionHubModal: React.FC<{ visible: boolean; onClose: () => void }> = ({
   visible,
@@ -507,6 +500,11 @@ export const AppNavigator: React.FC = () => {
             <Stack.Screen
               name="Offers"
               component={SafeOffersScreen}
+              options={{ presentation: 'card' }}
+            />
+            <Stack.Screen
+              name="TradeOfferDetail"
+              component={SafeTradeOfferDetailScreen}
               options={{ presentation: 'card' }}
             />
             <Stack.Screen

@@ -7,15 +7,12 @@ import {
   Modal,
   TouchableOpacity,
   ScrollView,
-  Dimensions,
 } from 'react-native';
 import Slider from '@react-native-community/slider';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useAppSelector, useAppDispatch } from '../../hooks/redux';
-import { updateFilters, resetDiscovery, fetchDiscoveryProfiles } from './discoverySlice';
-import { GENDER_OPTIONS, GOAL_OPTIONS, Gender, RelationshipGoal } from '../profile/types';
-
-const { height } = Dimensions.get('window');
+import { updateFilters, fetchDiscoveryProfiles } from './discoverySlice';
+import { GENDER_OPTIONS, GOAL_OPTIONS, Gender } from '../profile/types';
 
 interface FiltersModalProps {
   visible: boolean;

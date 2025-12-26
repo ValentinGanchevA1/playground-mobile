@@ -1,7 +1,7 @@
 // src/features/profile/profileSlice.ts
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
 import { apiClient } from '../../api/client';
-import { ProfileFormData, ProfileStep, PhotoSlot, RelationshipGoal } from './types';
+import { ProfileFormData, ProfileStep, RelationshipGoal } from './types';
 
 interface ProfileState {
   formData: ProfileFormData;
@@ -108,6 +108,15 @@ export const fetchCompletionStatus = createAsyncThunk(
   async () => {
     const { data } = await apiClient.get('/users/me/completion');
     return data;
+  }
+);
+
+export const validateStep = createAsyncThunk(
+  'profile/validateStep',
+  async ({ step: _step, data: _data }: { step: ProfileStep; data: any }, { rejectWithValue: _rejectWithValue }) => {
+    // Basic validation logic here, can be expanded
+    // For now, just return true as validation is mostly handled in UI components
+    return true;
   }
 );
 

@@ -64,7 +64,7 @@ export const TradingScreen: React.FC = () => {
     if (currentLocation) {
       fetchListings(true);
     }
-  }, [currentLocation, filters]);
+  }, [currentLocation, filters, fetchListings]);
 
   const handleCategorySelect = (category: string) => {
     dispatch(

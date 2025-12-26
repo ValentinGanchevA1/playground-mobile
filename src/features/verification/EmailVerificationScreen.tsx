@@ -54,10 +54,10 @@ export const EmailVerificationScreen: React.FC = () => {
         useNativeDriver: true,
       }).start();
     }
-  }, [emailStep]);
+  }, [emailStep, successAnim]);
 
-  const validateEmail = (email: string): boolean => {
-    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  const validateEmail = (emailValue: string): boolean => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailValue);
   };
 
   const handleSendCode = async () => {

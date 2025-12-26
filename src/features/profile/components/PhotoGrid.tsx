@@ -146,39 +146,6 @@ export const PhotoGrid: React.FC<Props> = ({
     ]);
   };
 
-  const takePhotoWithCamera = async (index: number) => {
-    try {
-      const image = await ImageCropPicker.openCamera({
-        width: 800,
-        height: 1000,
-        cropping: true,
-        useFrontCamera: true,
-        cropperToolbarTitle: 'Adjust Photo',
-        cropperActiveWidgetColor: '#00d4ff',
-        compressImageQuality: 0.8,
-        forceJpg: true,
-      });
-
-      setUploadingIndex(index);
-
-      const result = await dispatch(
-        uploadEditedPhoto({ uri: image.path, position: index })
-      );
-
-      if (uploadEditedPhoto.fulfilled.match(result)) {
-        const newPhotos = [...photos];
-        newPhotos[index] = result.payload.url;
-        onPhotosChange(newPhotos);
-      }
-    } catch (error: any) {
-      if (error.code !== 'E_PICKER_CANCELLED') {
-        Alert.alert('Error', 'Failed to capture image');
-      }
-    } finally {
-      setUploadingIndex(null);
-    }
-  };
-
   const renderSlot = (index: number) => {
     const photo = photos[index];
     const isUploading = uploadingIndex === index;

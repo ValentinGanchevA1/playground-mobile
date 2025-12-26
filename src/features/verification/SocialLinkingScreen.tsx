@@ -40,7 +40,7 @@ const PROVIDERS: SocialProvider[] = [
 
 export const SocialLinkingScreen: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { socialLinks, isLoading, error } = useAppSelector(
+  const { socialLinks } = useAppSelector(
     (state) => state.verification
   );
   const [linkingProvider, setLinkingProvider] = useState<string | null>(null);
@@ -88,9 +88,9 @@ export const SocialLinkingScreen: React.FC = () => {
         await dispatch(linkSocialAccount({ provider: provider.id, token })).unwrap();
         Alert.alert('Success', `${provider.name} account linked!`);
       }
-    } catch (error: any) {
-      if (!error.message?.includes('cancelled')) {
-        Alert.alert('Error', error.message || 'Failed to link account');
+    } catch (err: any) {
+      if (!err.message?.includes('cancelled')) {
+        Alert.alert('Error', err.message || 'Failed to link account');
       }
     } finally {
       setLinkingProvider(null);
@@ -99,7 +99,7 @@ export const SocialLinkingScreen: React.FC = () => {
 
   const handleGoogleSignIn = async (): Promise<string> => {
     await GoogleSignin.hasPlayServices();
-    const userInfo = await GoogleSignin.signIn();
+    await GoogleSignin.signIn();
     const tokens = await GoogleSignin.getTokens();
     return tokens.idToken;
   };

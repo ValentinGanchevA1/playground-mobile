@@ -1,6 +1,6 @@
 // src/components/SocialLinksDisplay.tsx
 import React from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, Linking, Image } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, Linking } from 'react-native';
 
 interface SocialLink {
   id: string;

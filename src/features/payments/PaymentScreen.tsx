@@ -37,7 +37,7 @@ export const PaymentScreen: React.FC<PaymentScreenProps> = ({ amount, onSuccess 
         Alert.alert('Success', 'Payment completed!');
         onSuccess();
       }
-    } catch (error) {
+    } catch {
       Alert.alert('Error', 'Payment processing failed');
     } finally {
       setIsLoading(false);

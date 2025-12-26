@@ -59,13 +59,12 @@ export const MyListingsScreen: React.FC = () => {
         {
           text: 'Delete',
           style: 'destructive',
-          onPress: async () => {
-            try {
-              await dispatch(deleteListing(listing.id)).unwrap();
-            } catch (err: unknown) {
-              const message = err instanceof Error ? err.message : 'Failed to delete';
-              Alert.alert('Error', message);
-            }
+          onPress: () => {
+            dispatch(deleteListing(listing.id)).unwrap()
+              .catch((err: unknown) => {
+                const message = err instanceof Error ? err.message : 'Failed to delete';
+                Alert.alert('Error', message);
+              });
           },
         },
       ],
@@ -80,14 +79,15 @@ export const MyListingsScreen: React.FC = () => {
         { text: 'Cancel', style: 'cancel' },
         {
           text: 'Complete',
-          onPress: async () => {
-            try {
-              await dispatch(completeTrade(listing.id)).unwrap();
-              Alert.alert('Success', 'Trade marked as completed!');
-            } catch (err: unknown) {
-              const message = err instanceof Error ? err.message : 'Failed to complete';
-              Alert.alert('Error', message);
-            }
+          onPress: () => {
+            dispatch(completeTrade(listing.id)).unwrap()
+              .then(() => {
+                Alert.alert('Success', 'Trade marked as completed!');
+              })
+              .catch((err: unknown) => {
+                const message = err instanceof Error ? err.message : 'Failed to complete';
+                Alert.alert('Error', message);
+              });
           },
         },
       ],
@@ -126,14 +126,12 @@ export const MyListingsScreen: React.FC = () => {
         {/* Actions based on status */}
         <View style={styles.actionsRow}>
           {item.status === 'active' && (
-            <>
-              <TouchableOpacity
-                style={styles.actionButton}
-                onPress={() => handleDelete(item)}
-              >
-                <Icon name="delete-outline" size={18} color="#ff4444" />
-              </TouchableOpacity>
-            </>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => handleDelete(item)}
+            >
+              <Icon name="delete-outline" size={18} color="#ff4444" />
+            </TouchableOpacity>
           )}
           {item.status === 'pending' && (
             <TouchableOpacity

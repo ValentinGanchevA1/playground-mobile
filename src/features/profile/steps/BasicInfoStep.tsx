@@ -90,7 +90,7 @@ export const BasicInfoStep: React.FC<Props> = ({ onNext }) => {
           placeholderTextColor="#666"
           value={formData.age?.toString() || ''}
           onChangeText={(text) => {
-            const age = parseInt(text) || null;
+            const age = parseInt(text, 10) || null;
             dispatch(updateFormData({ age }));
           }}
           keyboardType="number-pad"

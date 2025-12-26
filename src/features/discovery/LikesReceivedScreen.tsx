@@ -1,5 +1,5 @@
 // src/features/discovery/LikesReceivedScreen.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import {
   View,
   Text,
@@ -30,15 +30,15 @@ export const LikesReceivedScreen: React.FC = () => {
 
   const isPremium = user?.subscriptionTier && user.subscriptionTier !== SubscriptionTier.FREE;
 
-  useEffect(() => {
-    loadLikes();
-  }, []);
-
-  const loadLikes = async () => {
+  const loadLikes = useCallback(async () => {
     setIsLoading(true);
     await dispatch(fetchLikesReceived());
     setIsLoading(false);
-  };
+  }, [dispatch]);
+
+  useEffect(() => {
+    loadLikes();
+  }, [loadLikes]);
 
   const handleLikeBack = async (like: LikeReceived) => {
     if (!isPremium) {

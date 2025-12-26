@@ -7,15 +7,12 @@ import {
   StyleSheet,
   Modal,
   Animated,
-  Dimensions,
   TouchableWithoutFeedback,
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import LinearGradient from 'react-native-linear-gradient';
-import { useAppDispatch, useAppSelector } from '../hooks/redux';
-
-const { width, height } = Dimensions.get('window');
+import { useAppSelector } from '../hooks/redux';
 
 interface ActionItem {
   icon: string;
@@ -28,30 +25,12 @@ interface ActionItem {
 
 export const ActionHub: React.FC = () => {
   const navigation = useNavigation();
-  const dispatch = useAppDispatch();
   const { user } = useAppSelector((state) => state.auth);
   const [visible, setVisible] = useState(false);
   const [scaleAnim] = useState(new Animated.Value(0));
   const [fadeAnim] = useState(new Animated.Value(0));
 
   const isVisible = user?.isVisible ?? true;
-
-  const openModal = () => {
-    setVisible(true);
-    Animated.parallel([
-      Animated.spring(scaleAnim, {
-        toValue: 1,
-        friction: 6,
-        tension: 40,
-        useNativeDriver: true,
-      }),
-      Animated.timing(fadeAnim, {
-        toValue: 1,
-        duration: 200,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  };
 
   const closeModal = () => {
     Animated.parallel([
@@ -156,7 +135,7 @@ export const ActionHub: React.FC = () => {
 
           {/* Action Grid */}
           <View style={styles.actionsGrid}>
-            {actions.map((action, index) => (
+            {actions.map((action) => (
               <Animated.View
                 key={action.label}
                 style={{
@@ -225,7 +204,7 @@ export const useActionHub = () => useContext(ActionHubContext);
 
 // Provider component
 export const ActionHubProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [hubRef, setHubRef] = useState<{ open: () => void } | null>(null);
+  const [hubRef] = useState<{ open: () => void } | null>(null);
 
   return (
     <ActionHubContext.Provider value={{ openActionHub: () => hubRef?.open() }}>

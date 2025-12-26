@@ -1,9 +1,9 @@
 // src/features/profile/ProfileCreationScreen.tsx
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback } from 'react';
 import { View, StyleSheet } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
-import { setStep, submitProfile } from './profileSlice';
+import { setStep, submitProfile, validateStep } from './profileSlice';
 import { fetchCurrentUser } from '../auth/authSlice';
 import { ProfileStep } from './types';
 
@@ -18,7 +18,7 @@ const STEPS: ProfileStep[] = ['basics', 'photos', 'interests', 'goals', 'locatio
 
 export const ProfileCreationScreen: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { currentStep, formData, isSubmitting } = useAppSelector(
+  const { currentStep, isSubmitting, error, ...profileState } = useAppSelector(
     (state) => state.profile
   );
 
@@ -26,6 +26,10 @@ export const ProfileCreationScreen: React.FC = () => {
   const progress = ((currentIndex + 1) / STEPS.length) * 100;
 
   const goNext = useCallback(async () => {
+    // Validate current step before proceeding
+    const isValid = await dispatch(validateStep({ step: currentStep, data: profileState })).unwrap();
+    if (!isValid) return;
+
     if (currentIndex < STEPS.length - 1) {
       dispatch(setStep(STEPS[currentIndex + 1]));
     } else {
@@ -42,7 +46,7 @@ export const ProfileCreationScreen: React.FC = () => {
         console.log('ProfileCreation: Submit failed:', result.payload);
       }
     }
-  }, [currentIndex, dispatch]);
+  }, [currentIndex, dispatch, profileState, currentStep]);
 
   const goBack = useCallback(() => {
     if (currentIndex > 0) {
@@ -61,7 +65,7 @@ export const ProfileCreationScreen: React.FC = () => {
       case 'goals':
         return <GoalsStep onNext={goNext} onBack={goBack} />;
       case 'location':
-        return <LocationStep onNext={goNext} onBack={goBack} isSubmitting={isSubmitting} />;
+        return <LocationStep onNext={goNext} onBack={goBack} isSubmitting={isSubmitting} error={error} />;
       default:
         return null;
     }

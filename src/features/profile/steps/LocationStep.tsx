@@ -17,11 +17,12 @@ interface Props {
   onNext: () => void;
   onBack: () => void;
   isSubmitting: boolean;
+  error: string | null;
 }
 
-export const LocationStep: React.FC<Props> = ({ onNext, onBack, isSubmitting }) => {
+export const LocationStep: React.FC<Props> = ({ onNext, onBack, isSubmitting, error }) => {
   const dispatch = useAppDispatch();
-  const { formData, error } = useAppSelector((state) => state.profile);
+  const { formData } = useAppSelector((state) => state.profile);
   const [locationStatus, setLocationStatus] = useState<'idle' | 'requesting' | 'granted' | 'denied'>('idle');
 
   const requestLocation = async () => {
@@ -41,8 +42,8 @@ export const LocationStep: React.FC<Props> = ({ onNext, onBack, isSubmitting }) 
             }));
             setLocationStatus('granted');
           },
-          (error) => {
-            console.error('Location error:', error);
+          (locationError) => {
+            console.error('Location error:', locationError);
             setLocationStatus('denied');
           },
           { enableHighAccuracy: true, timeout: 15000, maximumAge: 10000 }
@@ -50,7 +51,7 @@ export const LocationStep: React.FC<Props> = ({ onNext, onBack, isSubmitting }) 
       } else {
         setLocationStatus('denied');
       }
-    } catch (err) {
+    } catch {
       setLocationStatus('denied');
     }
   };
