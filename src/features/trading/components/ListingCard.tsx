@@ -39,7 +39,10 @@ const CATEGORY_ICONS: Record<string, string> = {
 };
 
 export const ListingCard: React.FC<ListingCardProps> = ({ listing, onPress }) => {
-  const formatDistance = (km: number): string => {
+  const formatDistance = (km: number | undefined): string => {
+    if (km === undefined || km === null) {
+      return '';
+    }
     if (km < 1) {
       return `${Math.round(km * 1000)}m`;
     }
