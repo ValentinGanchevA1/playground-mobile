@@ -8,6 +8,7 @@ import profileReducer from '../features/profile/profileSlice';
 import profileEditReducer from '../features/profile/profileEditSlice';
 import verificationReducer from '../features/verification/verificationSlice';
 import interactionsReducer from '../features/interactions/interactionsSlice';
+import tradingReducer from '../features/trading/tradingSlice';
 
 export const store = configureStore({
   reducer: {
@@ -19,6 +20,7 @@ export const store = configureStore({
     profileEdit: profileEditReducer,
     verification: verificationReducer,
     interactions: interactionsReducer,
+    trading: tradingReducer,
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),
