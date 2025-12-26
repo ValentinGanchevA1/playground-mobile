@@ -4,8 +4,8 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { EventBus } from '../utils/eventBus';
 
 // Use your local IP for physical device, 10.0.2.2 for emulator
-const DEV_API_URL = 'http://10.0.2.2:3001'; // Android emulator
-const API_URL = __DEV__ ? DEV_API_URL : 'https://api.g88.app';
+const DEV_API_URL = 'http://10.0.2.2:3001/api/v1'; // Android emulator with API version
+const API_URL = __DEV__ ? DEV_API_URL : 'https://api.g88.app/api/v1';
 
 export const apiClient = axios.create({
   baseURL: API_URL,
