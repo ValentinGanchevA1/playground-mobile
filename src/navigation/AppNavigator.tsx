@@ -93,6 +93,15 @@ import { OffersScreen } from '../features/trading/OffersScreen';
 // Notifications
 import { NotificationsScreen } from '../features/notifications/NotificationsScreen';
 
+// Error Boundaries
+import { withScreenErrorBoundary } from '../components/ScreenErrorBoundary';
+
+// Wrap critical screens with error boundaries
+const SafeListingDetailScreen = withScreenErrorBoundary(ListingDetailScreen, 'Listing Details');
+const SafeCreateListingScreen = withScreenErrorBoundary(CreateListingScreen, 'Create Listing');
+const SafeOffersScreen = withScreenErrorBoundary(OffersScreen, 'Offers');
+const SafeMarketScreen = withScreenErrorBoundary(MarketScreen, 'Market');
+
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator();
 
@@ -205,7 +214,7 @@ const MainTabs = () => {
         <Tab.Screen name="Map" component={MapScreen} />
         <Tab.Screen name="Discover" component={DiscoveryScreen} />
         <Tab.Screen name="ActionHub" component={EmptyComponent} />
-        <Tab.Screen name="Market" component={MarketScreen} />
+        <Tab.Screen name="Market" component={SafeMarketScreen} />
         <Tab.Screen name="Inbox" component={InboxScreen} />
         <Tab.Screen name="Profile" component={ProfileScreen} />
       </Tab.Navigator>
@@ -479,15 +488,15 @@ export const AppNavigator: React.FC = () => {
               component={EventDetailScreen}
               options={{ presentation: 'card' }}
             />
-            {/* Trading Screens */}
+            {/* Trading Screens - wrapped with error boundaries */}
             <Stack.Screen
               name="ListingDetail"
-              component={ListingDetailScreen}
+              component={SafeListingDetailScreen}
               options={{ presentation: 'card' }}
             />
             <Stack.Screen
               name="CreateListing"
-              component={CreateListingScreen}
+              component={SafeCreateListingScreen}
               options={{ presentation: 'card' }}
             />
             <Stack.Screen
@@ -497,7 +506,7 @@ export const AppNavigator: React.FC = () => {
             />
             <Stack.Screen
               name="Offers"
-              component={OffersScreen}
+              component={SafeOffersScreen}
               options={{ presentation: 'card' }}
             />
             <Stack.Screen
