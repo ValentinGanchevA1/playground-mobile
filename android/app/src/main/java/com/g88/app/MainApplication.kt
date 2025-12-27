@@ -1,4 +1,4 @@
-package com.mobile
+package com.g88.app
 
 import android.app.Application
 import com.facebook.react.PackageList

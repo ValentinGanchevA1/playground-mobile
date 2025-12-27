@@ -1,0 +1,23 @@
+# Copy this file to gradle.properties and fill in your actual values
+# NEVER commit gradle.properties with real credentials to version control!
+
+# Project-wide Gradle settings.
+org.gradle.jvmargs=-Xmx2048m -XX:MaxMetaspaceSize=512m
+android.useAndroidX=true
+reactNativeArchitectures=armeabi-v7a,arm64-v8a,x86,x86_64
+newArchEnabled=true
+hermesEnabled=true
+edgeToEdgeEnabled=false
+
+# Google Maps API Key
+# Get this from Google Cloud Console
+# For production: Create an Android-restricted API key
+MAPS_API_KEY=YOUR_MAPS_API_KEY_HERE
+
+# Release signing configuration
+# Generate a release keystore first using:
+# keytool -genkeypair -v -storetype PKCS12 -keystore g88-release-key.keystore -alias g88-key-alias -keyalg RSA -keysize 2048 -validity 10000
+G88_RELEASE_STORE_FILE=g88-release-key.keystore
+G88_RELEASE_KEY_ALIAS=g88-key-alias
+G88_RELEASE_STORE_PASSWORD=your_keystore_password_here
+G88_RELEASE_KEY_PASSWORD=your_key_password_here
