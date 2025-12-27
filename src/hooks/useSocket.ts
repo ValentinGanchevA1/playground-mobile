@@ -109,9 +109,9 @@ export const useSocket = () => {
     });
 
     // Error handling
-    socketRef.current.on('error', (error) => {
-      console.error('Socket error:', error);
-      setError(error.message || 'Unknown socket error');
+    socketRef.current.on('error', (socketError) => {
+      console.error('Socket error:', socketError);
+      setError(socketError.message || 'Unknown socket error');
     });
 
   }, [dispatch]);
