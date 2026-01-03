@@ -79,6 +79,19 @@ proguard-rules.pro
 .env.local
 .env.production
 .env.staging
+.env.backup
 
 # Android signing
 android/gradle.properties
+
+# Release builds
+releases/
+*.aab
+*.apk
+
+# Keystore files (except debug)
+*.keystore
+!android/app/debug.keystore
+
+# Sensitive files
+google-services.json.backup
