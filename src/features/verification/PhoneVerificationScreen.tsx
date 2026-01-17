@@ -8,6 +8,8 @@ import {
   StyleSheet,
   ActivityIndicator,
   Keyboard,
+  NativeSyntheticEvent,
+  TextInputKeyPressEventData,
 } from 'react-native';
 import { useAppDispatch, useAppSelector } from '../../hooks/redux';
 import { sendPhoneCode, verifyPhoneCode } from './verificationSlice';
@@ -25,16 +27,26 @@ export const PhoneVerificationScreen: React.FC = () => {
   const inputRefs = useRef<(TextInput | null)[]>([]);
 
   useEffect(() => {
-    if (step === 'code') {
+    if ('code' === step) {
       inputRefs.current[0]?.focus();
     }
   }, [step]);
 
   const handleSendCode = async () => {
     Keyboard.dismiss();
-    const result = await dispatch(sendPhoneCode(phone));
+    const action = sendPhoneCode(phone);
+    const result = await dispatch(action);
     if (sendPhoneCode.fulfilled.match(result)) {
       setStep('code');
+    }
+  };
+
+  const handleVerifyCode = async (fullCode: string) => {
+    Keyboard.dismiss();
+    const action = verifyPhoneCode(fullCode);
+    const result = await dispatch(action);
+    if (verifyPhoneCode.fulfilled.match(result)) {
+      // Navigate back or show success
     }
   };
 
@@ -44,38 +56,62 @@ export const PhoneVerificationScreen: React.FC = () => {
     setCode(newCode);
 
     // Auto-focus next input
-    if (value && index < 5) {
+    if (value && 5 > index) {
       inputRefs.current[index + 1]?.focus();
     }
 
     // Auto-submit when complete
-    if (newCode.every((c) => c) && index === 5) {
-      handleVerifyCode(newCode.join(''));
+    if (newCode.every(Boolean) && 5 === index) {
+        const fullCode = newCode.join('');
+        // Using void to explicitly ignore the promise, as we don't need to await it here.
+        void handleVerifyCode(fullCode);
     }
   };
 
-  const handleKeyPress = (e: any, index: number) => {
-    if (e.nativeEvent.key === 'Backspace' && !code[index] && index > 0) {
+  const handleKeyPress = (
+    e: NativeSyntheticEvent<TextInputKeyPressEventData>,
+    index: number
+  ) => {
+    if ('Backspace' === e.nativeEvent.key && !code[index] && 0 < index) {
       inputRefs.current[index - 1]?.focus();
-    }
-  };
-
-  const handleVerifyCode = async (fullCode: string) => {
-    Keyboard.dismiss();
-    const result = await dispatch(verifyPhoneCode(fullCode));
-    if (verifyPhoneCode.fulfilled.match(result)) {
-      // Navigate back or show success
     }
   };
 
   const handleResend = () => {
     setCode(['', '', '', '', '', '']);
-    dispatch(sendPhoneCode(phone));
+    const action = sendPhoneCode(phone);
+    dispatch(action);
   };
+
+  const renderCodeInputs = () => {
+    return code.map((digit, index) => {
+      const handleInputChange = (value: string) => {
+        const lastChar = value.slice(-1);
+        handleCodeChange(lastChar, index);
+      };
+
+      return (
+        <TextInput
+          key={`code-input-${index}`} // Use a more unique key
+          ref={(ref) => {
+            inputRefs.current[index] = ref;
+          }}
+          style={[styles.codeInput, digit && styles.codeInputFilled]}
+          value={digit}
+          onChangeText={handleInputChange}
+          onKeyPress={(e) => handleKeyPress(e, index)}
+          keyboardType="number-pad"
+          maxLength={1}
+          selectTextOnFocus
+        />
+      );
+    });
+  };
+
 
   return (
     <View style={styles.container}>
-      {step === 'phone' ? (
+      {'phone' === step ? (
         <>
           <View style={styles.iconContainer}>
             <Text style={styles.icon}>📱</Text>
@@ -120,19 +156,7 @@ export const PhoneVerificationScreen: React.FC = () => {
           </Text>
 
           <View style={styles.codeContainer}>
-            {code.map((digit, index) => (
-              <TextInput
-                key={index}
-                ref={(ref) => { inputRefs.current[index] = ref; }}
-                style={[styles.codeInput, digit && styles.codeInputFilled]}
-                value={digit}
-                onChangeText={(value) => handleCodeChange(value.slice(-1), index)}
-                onKeyPress={(e) => handleKeyPress(e, index)}
-                keyboardType="number-pad"
-                maxLength={1}
-                selectTextOnFocus
-              />
-            ))}
+            {renderCodeInputs()}
           </View>
 
           {error && <Text style={styles.error}>{error}</Text>}
@@ -143,10 +167,10 @@ export const PhoneVerificationScreen: React.FC = () => {
             <TouchableOpacity
               style={styles.resendButton}
               onPress={handleResend}
-              disabled={phoneCountdown > 0}
+              disabled={0 < phoneCountdown}
             >
-              <Text style={[styles.resendText, phoneCountdown > 0 && styles.resendDisabled]}>
-                {phoneCountdown > 0 ? `Resend in ${phoneCountdown}s` : 'Resend Code'}
+              <Text style={[styles.resendText, 0 < phoneCountdown && styles.resendDisabled]}>
+                {0 < phoneCountdown ? `Resend in ${phoneCountdown}s` : 'Resend Code'}
               </Text>
             </TouchableOpacity>
           )}

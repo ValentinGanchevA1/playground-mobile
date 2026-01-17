@@ -88,6 +88,9 @@ android {
         versionCode 1
         versionName "1.0.0"
         resValue "string", "MAPS_API_KEY", (project.findProperty("MAPS_API_KEY") ?: "")
+        ndk {
+            abiFilters "x86_64", "arm64-v8a", "armeabi-v7a"
+        }
     }
     signingConfigs {
         debug {

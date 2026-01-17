@@ -23,7 +23,10 @@ interface ErrorBoundaryState {
   showErrorDetails: boolean;
 }
 
-export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+export class ErrorBoundary extends Component<
+  ErrorBoundaryProps,
+  ErrorBoundaryState
+> {
   constructor(props: ErrorBoundaryProps) {
     super(props);
     this.state = {
@@ -64,7 +67,6 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
   render(): ReactNode {
     if (this.state.hasError) {
-      // Use custom fallback if provided
       if (this.props.fallback) {
         return this.props.fallback;
       }
@@ -88,7 +90,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
             {/* Actions */}
             <View style={styles.actions}>
-              <TouchableOpacity style={styles.retryButton} onPress={this.handleRetry}>
+              <TouchableOpacity
+                style={styles.retryButton}
+                onPress={this.handleRetry}>
                 <Icon name="refresh" size={20} color="#000" />
                 <Text style={styles.retryButtonText}>Try Again</Text>
               </TouchableOpacity>
@@ -99,8 +103,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
               <View style={styles.detailsSection}>
                 <TouchableOpacity
                   style={styles.detailsToggle}
-                  onPress={this.toggleErrorDetails}
-                >
+                  onPress={this.toggleErrorDetails}>
                   <Text style={styles.detailsToggleText}>
                     {showErrorDetails ? 'Hide' : 'Show'} Error Details
                   </Text>
@@ -228,5 +231,3 @@ const styles = StyleSheet.create({
     fontFamily: 'monospace',
   },
 });
-
-export default ErrorBoundary;
